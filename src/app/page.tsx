@@ -1,5 +1,4 @@
 'use client';
-import Image from "next/image";
 import { useState } from "react";
 
 import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue} from "@nextui-org/table";
@@ -57,23 +56,23 @@ export default function Home() {
   ]);
 
   const [selectedEvent, setSelectedEvent] = useState(events[0]);
-  const [searchTerm, setSearchTerm] = useState("");
+  // const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredEvents = events.filter((event) =>
-    event.actor.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // const filteredEvents = events.filter((event) =>
+  //   event.actor.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
 
-  const handleSearch = (term: any) => {
-    setSearchTerm(term);
-  };
+  // const handleSearch = (term: any) => {
+  //   setSearchTerm(term);
+  // };
 
-  const handleSelectEvent = (event: any) => {
-    setSelectedEvent(event);
-  };
+  // const handleSelectEvent = (event: any) => {
+  //   setSelectedEvent(event);
+  // };
 
-  const handleLoadMore = () => {
-    // Load more events logic here
-  };
+  // const handleLoadMore = () => {
+  //   // Load more events logic here
+  // };
 
   return (
     <div className="max-w-5xl mx-auto p-4">
