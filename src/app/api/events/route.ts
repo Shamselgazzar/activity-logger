@@ -100,7 +100,6 @@ export async function GET(request: Request) {
       pageSize,
       numberOfPages,
       page,
-
     });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to retrieve events' }, { status: 500 });
