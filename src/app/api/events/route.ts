@@ -62,8 +62,8 @@ export async function GET(request: Request) {
           name: actionName ? { contains: actionName, mode: 'insensitive' } : undefined,
         },
       },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
+      skip: 0,
+      take: pageSize * page,
       orderBy: {
         occurredAt: 'desc',
       },
