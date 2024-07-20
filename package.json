@@ -11,6 +11,7 @@
     "verify": "node src/scripts/verify.js"
   },
   "dependencies": {
+    "@nextui-org/spinner": "^2.0.33",
     "@nextui-org/system": "^2.2.2",
     "@nextui-org/table": "^2.0.36",
     "@nextui-org/theme": "^2.2.6",
