@@ -24,10 +24,10 @@ model Event {
   metadata   Json
   actorId    String
   actionId   String
-  targetId   String
+  targetId   String?
   action     EventAction @relation(fields: [actionId], references: [id])
   actor      User        @relation("Actors", fields: [actorId], references: [id])
-  target     User        @relation("Targets", fields: [targetId], references: [id])
+  target     User?       @relation("Targets", fields: [targetId], references: [id])
 
   @@index([actorId])
   @@index([targetId])
