@@ -1,10 +1,9 @@
 'use client';
 import React, { useState, useEffect, Key } from "react";
 import useSWR from 'swr';
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@nextui-org/table";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Spinner, Avatar, AvatarIcon} from "@nextui-org/react";
 import { DetailedEvent } from "../models/DetailedEvent";
 import { EventsResponse } from "../models/EventsResponse";
-import { Spinner } from "@nextui-org/spinner";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -18,7 +17,7 @@ export default function Home() {
     `/api/events?page=${page}&pageSize=${pageSize}`,
     fetcher,
   );
-  const loadingState = isLoading || data?.events.length === 0 ? "loading" : "idle";
+  const loadingState = isLoading || data?.events?.length === 0 ? "loading" : "idle";
 
 
   useEffect(() => {
@@ -55,12 +54,31 @@ export default function Home() {
     };
     return new Date(dateString).toLocaleString('en-US', options);
   };
-
+ 
   const getKeyValue = (item: any, columnKey: Key) => {
     const key = String(columnKey);
     switch (key) {
       case 'actor':
-        return item.actor ? `${item.actor.name} (${item.actor.email})` : 'N/A';
+        return item.actor ? (
+          <div className="flex items-center">
+            <div className="flex items-center">
+              <Avatar
+                className="mr-2"
+                name={item.actor.name.slice(0, 1)}
+                showFallback
+                icon={<div></div>}
+                classNames={{
+                  base: "bg-gradient-to-br from-[#FFB457] to-[#FF70FB]",
+                  icon: "text-black/80",
+                }}
+              />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-medium">{item.actor.name}</span>
+              <span className="text-sm text-gray-600">({item.actor.email})</span>
+            </div>
+          </div>
+        ) : 'N/A';
       case 'action':
         return item.action.name;
       case 'date':
@@ -102,28 +120,27 @@ export default function Home() {
           />
           <div className="border-l border-gray-300 h-10 mx-2"></div>
           <button
-            onClick={handleFilter} // Replace with your filter function
+            onClick={handleFilter}
             className="px-3 py-1 bg-gray-100 text-gray-800 text-xs rounded"
           >
             FILTER
           </button>
           <div className="border-l border-gray-300 h-10 mx-2"></div>
           <button
-            onClick={handleExport} // Replace with your export function
+            onClick={handleExport}
             className="px-3 py-1 bg-gray-100 text-gray-800 text-xs rounded"
           >
             EXPORT
           </button>
           <div className="border-l border-gray-300 h-10 mx-2"></div>
           <button
-            onClick={toggleLiveView} // Replace with your live view function
+            onClick={toggleLiveView}
             className="px-3 py-1 bg-gray-100 text-xs text-gray-800 rounded"
           >
             LIVE
           </button>
-        </div>
-
-
+        </div>  
+        
         <div id="table-container" className="no-padding">
           <Table aria-label="events-table" selectionMode="single" shadow="none" className="bg-gray-100"
           classNames={{
@@ -138,7 +155,7 @@ export default function Home() {
 
             <TableBody 
               items={filteredData.events}
-              loadingContent={<Spinner color="secondary" size="sm" />}
+              loadingContent={<Spinner color="current" />}
               loadingState={loadingState}
               >
               {(item: DetailedEvent) => (
@@ -151,7 +168,7 @@ export default function Home() {
         </div>
         <div id="load-more-container" className=" bg-gray-100 px-2 p-2 flex justify-between items-center text-center rounded-b-xl relative -mt-4">
           { data? <button
-          className="mx-auto bg-gray-100 text-gray-600 bold"
+          className="w-full bg-gray-00 text-gray-600 bold"
             onClick={() => setPage(page + 1)}
             disabled={filteredData.numberOfPages === page}
             style={filteredData.numberOfPages === page ? { pointerEvents: 'none', opacity: 0.4 } : {}}
@@ -160,8 +177,6 @@ export default function Home() {
           </button> : <div className="text-gray-600 mx-auto">Loading...</div>
           }
         </div>
-
-        {/* // if (!data) return <div>Loading...</div>; */}
 
       </div>
     </div>
