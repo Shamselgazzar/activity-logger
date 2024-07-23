@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { EventsResponse } from "../../../models/EventsResponse";
 
 const prisma = new PrismaClient();
 
@@ -102,6 +103,12 @@ export async function GET(request: Request) {
       page,
     });
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to retrieve events' }, { status: 500 });
+    const emptyResponse: EventsResponse = {events: [], totalCount: 0, pageSize: 4, numberOfPages: 1, page: 1};
+    if (error instanceof Error && error.message.includes('Network request failed')) {
+      console.log('No connection');
+    } else {
+      console.log(error);
+    }
+    return NextResponse.json(emptyResponse, { status: 500 });
   }
 }
