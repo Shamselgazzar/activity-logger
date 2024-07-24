@@ -1,6 +1,10 @@
 import { EventsResponse,  } from "../models/EventsResponse";
 
 export const handleExport = (filteredData: EventsResponse) => {
+  if (filteredData.events.length === 0) {
+    console.warn("Nothing to export");
+    return;
+  }
   const json2csv = (json : any) => {
     const fields = [
       "id", "object", "location", "occurredAt",
