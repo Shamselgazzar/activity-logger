@@ -110,8 +110,6 @@ export default function Home() {
   }
 
   // UI View
-  const noShadowStyle = { boxShadow: 'none !important' };
-
   return (
     <div className="p-6 rounded-lg border-gray-300">
       <h1 className="text-2xl font-bold my-4 text-gray-600 mx-auto text-center">
