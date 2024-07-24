@@ -31,9 +31,6 @@ export default function Home() {
     }
   }, [data]);
 
-  useEffect(() => {
-    searchEvents();
-  }, [search]);
 
   const searchEvents = () => {
     if (!data) return;
@@ -52,6 +49,10 @@ export default function Home() {
     const filteredData = { events: filteredEvents, totalCount: filteredEvents.length, numberOfPages: Math.ceil(filteredEvents.length / pageSize), page: page, pageSize: pageSize } as EventsResponse;
     setFilteredData(filteredData);
   };
+
+  useEffect(() => {
+    searchEvents();
+  }, [search, searchEvents]);
 
   const getKeyValue = (item: any, columnKey: Key) => {
     const key = String(columnKey);
