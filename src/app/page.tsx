@@ -25,7 +25,6 @@ export default function Home() {
   const loadingState = isLoading ? "loading" : "idle";
 
   useEffect(() => {
-    console.log("data changed", data);
     if (data) {
       setSearch('');
       setFilteredData(data);
@@ -63,7 +62,6 @@ export default function Home() {
             <div className="flex items-center">
               <Avatar
                 className="mr-2 text-white text-large"
-                // size="sm"
                 name={item.actor.name.slice(0, 1)}
                 classNames={{
                   base: "bg-gradient-to-br from-[#F3994A] to-[#B325E2]",
@@ -124,12 +122,12 @@ export default function Home() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search name, email, action, or group..."
-            className="text-sm font-semibold bg-gray-100 text-gray-800 px-2 py-1 border-b-0 border-gray-300 flex-grow"
+            className="text-sm font-semibold bg-gray-100 text-gray-800 px-2 py-1 border-b-0 border-gray-300 flex-grow focus:outline-none"
           />
           <div className="border-l border-gray-300 h-10 mx-2"></div>
           <button
             onClick={handleFilter}
-            className="px-3 py-1 bg-gray-100 text-gray-800 text-xs rounded flex items-center justify-center"
+            className="px-3 py-1 bg-gray-100 text-gray-800 text-xs rounded flex items-center justify-center hover:scale-105"
           >
             <Image src='/filter.svg' alt='filter icon' width={20} height={20} className="mr-1" />
             FILTER
@@ -137,7 +135,7 @@ export default function Home() {
           <div className="border-l border-gray-300 h-10 mx-2"></div>
           <button
             onClick={onExportClick}
-            className="px-3 py-1 bg-gray-100 text-gray-800 text-xs rounded flex items-center justify-center"
+            className="px-3 py-1 bg-gray-100 text-gray-800 text-xs rounded flex items-center justify-center hover:scale-105"
           >
             <Image src='/export.svg' alt='export icon' width={20} height={20} className="mr-1" />
             EXPORT
@@ -145,7 +143,7 @@ export default function Home() {
           <div className="border-l border-gray-300 h-10 mx-2"></div>
           <button
             onClick={toggleLiveView}
-            className="px-3 py-1 bg-gray-100 text-xs text-gray-800 rounded flex items-center justify-center"
+            className="px-3 py-1 bg-gray-100 text-xs text-gray-800 rounded flex items-center justify-center hover:scale-105"
           >
             <Image src='/live.svg' alt='live icon' width={15} height={15} className="mr-1" />
             LIVE
