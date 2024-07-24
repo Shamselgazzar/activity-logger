@@ -152,16 +152,18 @@ export default function Home() {
           </button>
         </div>
 
-        <div id="table-container" className="no-padding">
+        <div id="table-container">
           <Table aria-label="events-table" selectionMode="single" 
-          shadow="none" 
+          shadow="none"
           isHeaderSticky
           classNames={{
             th: "px-7 pb-2 text-sm font-semibold text-gray-600",
+            tr: "no-shadow",
             td: "px-7",
+            wrapper: "no-padding",
           }}
           >
-            <TableHeader className="rounded-none">
+            <TableHeader>
               <TableColumn key="actor">ACTOR</TableColumn>
               <TableColumn key="action">ACTION</TableColumn>
               <TableColumn key="date">DATE</TableColumn>

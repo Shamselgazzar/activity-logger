@@ -2,9 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-.no-padding > div > div{ 
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-  padding-top: 0 !important;
-  padding-bottom: 4 !important;
+.no-padding{ 
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 0;
+  padding-bottom: 4; 
+}
+
+.no-shadow{
+  box-shadow: none !important;
 }
