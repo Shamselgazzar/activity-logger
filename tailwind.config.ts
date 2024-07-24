@@ -4,7 +4,7 @@ import type { Config } from 'tailwindcss';
 const config: Config = {
   content: [
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx,css}",
     "./node_modules/@nextui-org/theme/dist/components/**/*.{js,ts,jsx,tsx,mdx}"
   ],
   theme: {
