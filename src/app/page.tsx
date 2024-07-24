@@ -24,7 +24,7 @@ export default function Home() {
     router ?`/api/events?page=${page}&pageSize=${pageSize}` : null,
     router ? fetcher : null,
   );
-  
+
   const loadingState = isLoading ? "loading" : "idle";
 
   useEffect(() => {
@@ -107,8 +107,6 @@ export default function Home() {
   };
 
   // UI View
-  if (error) return <div>Failed to load</div>;
-
   function onExportClick(): void {
     handleExport(filteredData);
   }
@@ -187,7 +185,7 @@ export default function Home() {
           </Table>
         </div>
         <div id="load-more-container" className="bg-gray-100 px-2 p-2 flex justify-between items-center text-center rounded-b-xl relative -mt-4">
-          {data ? (
+          {!isLoading ? (
             <button
               className="w-full bg-gray-100 text-gray-600 font-medium text-sm"
               onClick={() => setPage(page + 1)}
