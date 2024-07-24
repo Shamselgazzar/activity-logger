@@ -1,31 +1,35 @@
 'use client';
 import React, { useState, useEffect, Key } from "react";
 import useSWR from 'swr';
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Spinner, Avatar, AvatarIcon} from "@nextui-org/react";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Spinner, Avatar } from "@nextui-org/react";
 import { DetailedEvent } from "../models/DetailedEvent";
 import { EventsResponse } from "../models/EventsResponse";
+import { handleExport } from "../utils/exportUtils"; 
+import Image from 'next/image';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function Home() {
   const [page, setPage] = useState(1);
-  const [pageSize] = useState(2);
+  const [pageSize] = useState(4);
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState({ events: [], totalCount: 0, numberOfPages: 1, page: 1, pageSize: 5 } as EventsResponse);
+  const [selectedEvent, setSelectedEvent] = useState<DetailedEvent | null>(null);
 
   const { data, error, isLoading }: { data: EventsResponse, error: any, isLoading: boolean } = useSWR(
     `/api/events?page=${page}&pageSize=${pageSize}`,
     fetcher,
   );
-  const loadingState = isLoading || data?.events?.length === 0 ? "loading" : "idle";
-
+  const loadingState = isLoading ? "loading" : "idle";
 
   useEffect(() => {
+    console.log("data changed", data);
     if (data) {
+      setSearch('');
       setFilteredData(data);
     }
   }, [data]);
-  
+
   useEffect(() => {
     searchEvents();
   }, [search]);
@@ -44,7 +48,7 @@ export default function Home() {
         item.action.name.toLowerCase().includes(search.toLowerCase())
       );
     });
-    const filteredData = { events: filteredEvents, totalCount: filteredEvents.length, numberOfPages: Math.ceil(filteredEvents.length/pageSize), page: page, pageSize: pageSize } as EventsResponse;
+    const filteredData = { events: filteredEvents, totalCount: filteredEvents.length, numberOfPages: Math.ceil(filteredEvents.length / pageSize), page: page, pageSize: pageSize } as EventsResponse;
     setFilteredData(filteredData);
   };
 
@@ -54,7 +58,7 @@ export default function Home() {
     };
     return new Date(dateString).toLocaleString('en-US', options);
   };
- 
+
   const getKeyValue = (item: any, columnKey: Key) => {
     const key = String(columnKey);
     switch (key) {
@@ -63,12 +67,11 @@ export default function Home() {
           <div className="flex items-center">
             <div className="flex items-center">
               <Avatar
-                className="mr-2"
+                className="mr-2 text-white text-large"
+                // size="sm"
                 name={item.actor.name.slice(0, 1)}
-                showFallback
-                icon={<div></div>}
                 classNames={{
-                  base: "bg-gradient-to-br from-[#FFB457] to-[#FF70FB]",
+                  base: "bg-gradient-to-br from-[#F3994A] to-[#B325E2]",
                   icon: "text-black/80",
                 }}
               />
@@ -92,23 +95,30 @@ export default function Home() {
     console.log('Filtering data...');
   };
 
-  const handleExport = () => {
-    console.log('Exporting data...');
-  };
+  
 
   const toggleLiveView = () => {
     console.log('Toggling live view...');
   };
 
+  const handleRowClick = (event: DetailedEvent) => {
+    setSelectedEvent(event);
+  };
+
+
   // UI View
   if (error) return <div>Failed to load</div>;
 
+  function onExportClick(): void {
+    handleExport(filteredData);
+  }
+
   return (
-    <div className=" p-6   rounded-lg border-gray-300"> 
-      <h1 className="text-2xl font-bold my-4 text-gray-800 mx-auto text-center">
+    <div className="p-6 rounded-lg border-gray-300">
+      <h1 className="text-2xl font-bold my-4 text-gray-600 mx-auto text-center">
         Activity Logger
-      </h1> 
-      <div id="main-container" className="max-w-5xl mx-auto  border rounded-xl border-gray-300  bg-gray-100">
+      </h1>
+      <div id="main-container" className="max-w-5xl mx-auto border rounded-xl border-gray-300 bg-gray-100">
         <div id="search-container" className="bg-gray-100 px-2 mx-2 mt-4 rounded-xl flex items-center border border-gray-200">
           <input
             type="text"
@@ -121,67 +131,73 @@ export default function Home() {
           <div className="border-l border-gray-300 h-10 mx-2"></div>
           <button
             onClick={handleFilter}
-            className="px-3 py-1 bg-gray-100 text-gray-800 text-xs rounded"
+            className="px-3 py-1 bg-gray-100 text-gray-800 text-xs rounded flex items-center justify-center"
           >
+            <Image src='/filter.svg' alt='filter icon' width={20} height={20} className="mr-1" />
             FILTER
           </button>
           <div className="border-l border-gray-300 h-10 mx-2"></div>
           <button
-            onClick={handleExport}
-            className="px-3 py-1 bg-gray-100 text-gray-800 text-xs rounded"
+            onClick={onExportClick}
+            className="px-3 py-1 bg-gray-100 text-gray-800 text-xs rounded flex items-center justify-center"
           >
+            <Image src='/export.svg' alt='export icon' width={20} height={20} className="mr-1" />
             EXPORT
           </button>
           <div className="border-l border-gray-300 h-10 mx-2"></div>
           <button
             onClick={toggleLiveView}
-            className="px-3 py-1 bg-gray-100 text-xs text-gray-800 rounded"
+            className="px-3 py-1 bg-gray-100 text-xs text-gray-800 rounded flex items-center justify-center"
           >
+            <Image src='/live.svg' alt='live icon' width={15} height={15} className="mr-1" />
             LIVE
           </button>
-        </div>  
-        
+        </div>
+
         <div id="table-container" className="no-padding">
-          <Table aria-label="events-table" selectionMode="single" shadow="none" className="bg-gray-100"
-          classNames={{
-            table: "p-0 m-0 bg-transparent",
-            
-          }}>
+          <Table aria-label="events-table" selectionMode="single" 
+          shadow="none" 
+          isHeaderSticky
+          >
             <TableHeader className="rounded-none">
               <TableColumn key="actor">ACTOR</TableColumn>
               <TableColumn key="action">ACTION</TableColumn>
               <TableColumn key="date">DATE</TableColumn>
             </TableHeader>
-
-            <TableBody 
+            <TableBody
               items={filteredData.events}
               loadingContent={<Spinner color="current" />}
               loadingState={loadingState}
-              >
+              emptyContent="No events found"
+            >
               {(item: DetailedEvent) => (
-                <TableRow key={String(item.id)}>
-                  {(columnKey) => <TableCell>{getKeyValue(item, columnKey)}</TableCell>}
+                <TableRow
+                  key={String(item.id)}
+                  onClick={() => handleRowClick(item)}
+                  className="cursor-pointer hover:bg-gray-200"
+                >
+                  {(columnKey) => <TableCell className="font-medium">{getKeyValue(item, columnKey)}</TableCell>}
                 </TableRow>
               )}
             </TableBody>
           </Table>
         </div>
-        <div id="load-more-container" className=" bg-gray-100 px-2 p-2 flex justify-between items-center text-center rounded-b-xl relative -mt-4">
-          { data? <button
-          className="w-full bg-gray-00 text-gray-600 bold"
-            onClick={() => setPage(page + 1)}
-            disabled={filteredData.numberOfPages === page}
-            style={filteredData.numberOfPages === page ? { pointerEvents: 'none', opacity: 0.4 } : {}}
-          >
-            LOAD MORE 
-          </button> : <div className="text-gray-600 mx-auto">Loading...</div>
-          }
+        <div id="load-more-container" className="bg-gray-100 px-2 p-2 flex justify-between items-center text-center rounded-b-xl relative -mt-4">
+          {data ? (
+            <button
+              className="w-full bg-gray-100 text-gray-600 font-medium text-sm"
+              onClick={() => setPage(page + 1)}
+              disabled={filteredData.numberOfPages === page}
+              style={filteredData.numberOfPages === page ? { pointerEvents: 'none', opacity: 0.4 } : {}}
+            >
+              LOAD MORE
+            </button>
+          ) : (
+            <div className="text-gray-600 mx-auto">Loading...</div>
+          )}
         </div>
-
       </div>
-    </div>
-    
-  );
 
-  
+    </div>
+  );
 }
