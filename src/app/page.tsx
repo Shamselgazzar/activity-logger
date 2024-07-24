@@ -1,14 +1,15 @@
 'use client';
-import React, { useState, useEffect, Key } from "react";
+import React, { useState, useEffect, Key, useCallback } from "react";
 import useSWR from 'swr';
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Spinner, Avatar } from "@nextui-org/react";
 import { DetailedEvent } from "../models/DetailedEvent";
 import { EventsResponse } from "../models/EventsResponse";
 import { handleExport } from "../utils/exportUtils"; 
 import Image from 'next/image';
-import EventDetailsModal from "./components/event-details-modal.component";
+import EventDetailsModal from "../components/event-details-modal.component";
 import { formatDate } from '../utils/utils';
-import { useRouter } from "next/navigation";
+import '../app/globals.css';
+import { NextUIProvider } from '@nextui-org/react';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -18,11 +19,10 @@ export default function Home() {
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState({ events: [], totalCount: 0, numberOfPages: 1, page: 1, pageSize: 4 } as EventsResponse);
   const [selectedEvent, setSelectedEvent] = useState<DetailedEvent | null>(null); // Track selected event
-  const router = useRouter();
 
   const { data, error, isLoading }: { data: EventsResponse, error: any, isLoading: boolean } = useSWR(
-    router ?`/api/events?page=${page}&pageSize=${pageSize}` : null,
-    router ? fetcher : null,
+    `/api/events?page=${page}&pageSize=${pageSize}`,
+    fetcher,
   );
 
   const loadingState = isLoading ? "loading" : "idle";
@@ -35,7 +35,7 @@ export default function Home() {
   }, [data]);
 
 
-  const searchEvents = () => {
+  const searchEvents = useCallback(() => {
     if (!data) return;
     if (!search) {
       setFilteredData(data);
@@ -51,12 +51,12 @@ export default function Home() {
     });
     const filteredData = { events: filteredEvents, totalCount: filteredEvents.length, numberOfPages: Math.ceil(filteredEvents.length / pageSize), page: page, pageSize: pageSize } as EventsResponse;
     setFilteredData(filteredData);
-  };
-
+  }, [data, search, pageSize]);
+  
   useEffect(() => {
     searchEvents();
   }, [search, searchEvents]);
-
+  
   const getKeyValue = (item: any, columnKey: Key) => {
     const key = String(columnKey);
     switch (key) {

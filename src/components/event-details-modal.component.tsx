@@ -1,6 +1,6 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/modal";
-import { DetailedEvent } from "../../models/DetailedEvent";
-import { formatDate } from '../../utils/utils';
+import { DetailedEvent } from "../models/DetailedEvent";
+import { formatDate } from '../utils/utils';
 
 
 interface EventDetailsModalProps {
