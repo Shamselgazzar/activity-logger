@@ -92,8 +92,6 @@ export default function Home() {
     console.log('Filtering data...');
   };
 
-  
-
   const toggleLiveView = () => {
     console.log('Toggling live view...');
   };
@@ -106,10 +104,13 @@ export default function Home() {
     setSelectedEvent(null);
   };
 
-  // UI View
+  
   function onExportClick(): void {
     handleExport(filteredData);
   }
+
+  // UI View
+  const noShadowStyle = { boxShadow: 'none !important' };
 
   return (
     <div className="p-6 rounded-lg border-gray-300">
@@ -160,7 +161,7 @@ export default function Home() {
             th: "px-7 pb-2 text-sm font-semibold text-gray-600",
             tr: "no-shadow",
             td: "px-7",
-            wrapper: "no-padding",
+            wrapper: "px-0 pt-0 pb-4",
           }}
           >
             <TableHeader>
