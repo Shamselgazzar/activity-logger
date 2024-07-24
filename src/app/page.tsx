@@ -6,6 +6,8 @@ import { DetailedEvent } from "../models/DetailedEvent";
 import { EventsResponse } from "../models/EventsResponse";
 import { handleExport } from "../utils/exportUtils"; 
 import Image from 'next/image';
+import EventDetailsModal from "./components/event-details-modal.component";
+import { formatDate } from '../utils/utils';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -14,7 +16,7 @@ export default function Home() {
   const [pageSize] = useState(4);
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState({ events: [], totalCount: 0, numberOfPages: 1, page: 1, pageSize: 5 } as EventsResponse);
-  const [selectedEvent, setSelectedEvent] = useState<DetailedEvent | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<DetailedEvent | null>(null); // Track selected event
 
   const { data, error, isLoading }: { data: EventsResponse, error: any, isLoading: boolean } = useSWR(
     `/api/events?page=${page}&pageSize=${pageSize}`,
@@ -50,13 +52,6 @@ export default function Home() {
     });
     const filteredData = { events: filteredEvents, totalCount: filteredEvents.length, numberOfPages: Math.ceil(filteredEvents.length / pageSize), page: page, pageSize: pageSize } as EventsResponse;
     setFilteredData(filteredData);
-  };
-
-  const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = {
-      month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric',
-    };
-    return new Date(dateString).toLocaleString('en-US', options);
   };
 
   const getKeyValue = (item: any, columnKey: Key) => {
@@ -105,6 +100,9 @@ export default function Home() {
     setSelectedEvent(event);
   };
 
+  const closeModal = () => {
+    setSelectedEvent(null);
+  };
 
   // UI View
   if (error) return <div>Failed to load</div>;
@@ -119,7 +117,7 @@ export default function Home() {
         Activity Logger
       </h1>
       <div id="main-container" className="max-w-5xl mx-auto border rounded-xl border-gray-300 bg-gray-100">
-        <div id="search-container" className="bg-gray-100 px-2 mx-2 mt-4 rounded-xl flex items-center border border-gray-200">
+        <div id="search-container" className="bg-gray-100 px-2 mx-5 mt-5 mb-2 rounded-xl flex items-center border border-gray-200">
           <input
             type="text"
             title="name, email, action, or group..."
@@ -158,6 +156,10 @@ export default function Home() {
           <Table aria-label="events-table" selectionMode="single" 
           shadow="none" 
           isHeaderSticky
+          classNames={{
+            th: "px-7 pb-2 text-sm font-semibold text-gray-600",
+            td: "px-7",
+          }}
           >
             <TableHeader className="rounded-none">
               <TableColumn key="actor">ACTOR</TableColumn>
@@ -187,8 +189,8 @@ export default function Home() {
             <button
               className="w-full bg-gray-100 text-gray-600 font-medium text-sm"
               onClick={() => setPage(page + 1)}
-              disabled={filteredData.numberOfPages === page}
-              style={filteredData.numberOfPages === page ? { pointerEvents: 'none', opacity: 0.4 } : {}}
+              disabled={filteredData.numberOfPages <= page}
+              style={filteredData.numberOfPages <= page ? { pointerEvents: 'none', opacity: 0.4 } : {}}
             >
               LOAD MORE
             </button>
@@ -197,6 +199,11 @@ export default function Home() {
           )}
         </div>
       </div>
+
+      <EventDetailsModal
+        event={selectedEvent}
+        onClose={closeModal}
+      />
 
     </div>
   );

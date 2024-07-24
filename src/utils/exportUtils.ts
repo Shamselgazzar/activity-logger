@@ -1,9 +1,4 @@
-import { DetailedEvent } from "../models/DetailedEvent";
 import { EventsResponse,  } from "../models/EventsResponse";
-
-// todo make the headers pretty
-// todo fix metadata
-
 
 export const handleExport = (filteredData: EventsResponse) => {
   const json2csv = (json : any) => {
