@@ -8,6 +8,7 @@ import { handleExport } from "../utils/exportUtils";
 import Image from 'next/image';
 import EventDetailsModal from "./components/event-details-modal.component";
 import { formatDate } from '../utils/utils';
+import { useRouter } from "next/navigation";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -15,13 +16,15 @@ export default function Home() {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(4);
   const [search, setSearch] = useState('');
-  const [filteredData, setFilteredData] = useState({ events: [], totalCount: 0, numberOfPages: 1, page: 1, pageSize: 5 } as EventsResponse);
+  const [filteredData, setFilteredData] = useState({ events: [], totalCount: 0, numberOfPages: 1, page: 1, pageSize: 4 } as EventsResponse);
   const [selectedEvent, setSelectedEvent] = useState<DetailedEvent | null>(null); // Track selected event
+  const router = useRouter();
 
   const { data, error, isLoading }: { data: EventsResponse, error: any, isLoading: boolean } = useSWR(
-    `/api/events?page=${page}&pageSize=${pageSize}`,
-    fetcher,
+    router ?`/api/events?page=${page}&pageSize=${pageSize}` : null,
+    router ? fetcher : null,
   );
+  
   const loadingState = isLoading ? "loading" : "idle";
 
   useEffect(() => {

@@ -103,10 +103,11 @@ export async function GET(request: Request) {
       page,
     });
   } catch (error) {
+    const emptyResponse = { events: [], totalCount: 0, pageSize: 4, numberOfPages: 0, page: 0 }
     if (error instanceof Error && error.message.includes('Network request failed')) {
-      return NextResponse.json({ error: 'Network request failed' }, { status: 500 });
+      return NextResponse.json(emptyResponse, { status: 500 });
     } else {
-      return NextResponse.json({ error: 'Failed to fetch events' }, { status: 500 });
+      throw error;
     }
   }
 }
