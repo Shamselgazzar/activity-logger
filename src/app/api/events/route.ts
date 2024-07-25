@@ -49,9 +49,9 @@ export async function GET(request: Request) {
   try {
     const events = await prisma.event.findMany({
       where: {
-        actorId: actorId ? actorId : undefined,
-        targetId: targetId ? targetId : undefined,
-        actionId: actionId ? actionId : undefined,
+        actorId: actorId ? { contains: actorId, mode: 'insensitive' } : undefined,
+        targetId: targetId ? { contains: targetId, mode: 'insensitive' } : undefined,
+        actionId: actionId ? { contains: actionId, mode: 'insensitive' } : undefined,
         location: location ? { contains: location, mode: 'insensitive' } : undefined,
         occurredAt: occurredAt ? { equals: new Date(occurredAt) } : undefined,
         actor: {
@@ -77,9 +77,9 @@ export async function GET(request: Request) {
 
     const totalCount = await prisma.event.count({
       where: {
-        actorId: actorId ? actorId : undefined,
-        targetId: targetId ? targetId : undefined,
-        actionId: actionId ? actionId : undefined,
+        actorId: actorId ? { contains: actorId, mode: 'insensitive' } : undefined,
+        targetId: targetId ? { contains: targetId, mode: 'insensitive' } : undefined,
+        actionId: actionId ? { contains: actionId, mode: 'insensitive' } : undefined,
         location: location ? { contains: location, mode: 'insensitive' } : undefined,
         occurredAt: occurredAt ? { equals: new Date(occurredAt) } : undefined,
         actor: {
@@ -103,7 +103,7 @@ export async function GET(request: Request) {
       page,
     });
   } catch (error) {
-    const emptyResponse = { events: [], totalCount: 0, pageSize: 4, numberOfPages: 0, page: 0 }
+    const emptyResponse : EventsResponse = { events: [], totalCount: 0, pageSize: 4, numberOfPages: 0, page: 0 }
     if (error instanceof Error && error.message.includes('Network request failed')) {
       return NextResponse.json(emptyResponse, { status: 500 });
     } else {

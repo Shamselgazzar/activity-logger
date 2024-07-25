@@ -9,7 +9,6 @@ import Image from 'next/image';
 import EventDetailsModal from "../components/event-details-modal.component";
 import { formatDate } from '../utils/utils';
 import '../app/globals.css';
-import { NextUIProvider } from '@nextui-org/react';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -17,7 +16,7 @@ export default function Home() {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(4);
   const [search, setSearch] = useState('');
-  const [filteredData, setFilteredData] = useState({ events: [], totalCount: 0, numberOfPages: 1, page: 1, pageSize: 4 } as EventsResponse);
+  const [searchedData, setSearchedData] = useState({ events: [], totalCount: 0, numberOfPages: 1, page: 1, pageSize: 4 } as EventsResponse);
   const [selectedEvent, setSelectedEvent] = useState<DetailedEvent | null>(null); // Track selected event
 
   const { data, error, isLoading }: { data: EventsResponse, error: any, isLoading: boolean } = useSWR(
@@ -30,7 +29,7 @@ export default function Home() {
   useEffect(() => {
     if (data) {
       setSearch('');
-      setFilteredData(data);
+      setSearchedData(data);
     }
   }, [data]);
 
@@ -38,10 +37,10 @@ export default function Home() {
   const searchEvents = useCallback(() => {
     if (!data) return;
     if (!search) {
-      setFilteredData(data);
+      setSearchedData(data);
       return;
     }
-    const filteredEvents = data.events.filter((item: DetailedEvent) => {
+    const searchedEvents = data.events.filter((item: DetailedEvent) => {
       return (
         item.actor.name.toLowerCase().includes(search.toLowerCase()) ||
         item.actor.email.toLowerCase().includes(search.toLowerCase()) ||
@@ -49,8 +48,8 @@ export default function Home() {
         item.action.name.toLowerCase().includes(search.toLowerCase())
       );
     });
-    const filteredData = { events: filteredEvents, totalCount: filteredEvents.length, numberOfPages: Math.ceil(filteredEvents.length / pageSize), page: page, pageSize: pageSize } as EventsResponse;
-    setFilteredData(filteredData);
+    const searchedData = { events: searchedEvents, totalCount: searchedEvents.length, numberOfPages: Math.ceil(searchedEvents.length / pageSize), page: page, pageSize: pageSize } as EventsResponse;
+    setSearchedData(searchedData);
   }, [data, search, pageSize]);
   
   useEffect(() => {
@@ -106,7 +105,7 @@ export default function Home() {
 
   
   function onExportClick(): void {
-    handleExport(filteredData);
+    handleExport(searchedData);
   }
 
   // UI View
@@ -168,7 +167,7 @@ export default function Home() {
               <TableColumn key="date">DATE</TableColumn>
             </TableHeader>
             <TableBody
-              items={filteredData.events}
+              items={searchedData.events}
               loadingContent={<Spinner color="current" />}
               loadingState={loadingState}
               emptyContent="No events found"
@@ -190,8 +189,8 @@ export default function Home() {
             <button
               className="w-full bg-gray-100 text-gray-600 font-medium text-sm"
               onClick={() => setPage(page + 1)}
-              disabled={filteredData.numberOfPages <= page}
-              style={filteredData.numberOfPages <= page ? { pointerEvents: 'none', opacity: 0.4 } : {}}
+              disabled={searchedData.numberOfPages <= page || page === 0}
+              style={searchedData.numberOfPages <= page ? { pointerEvents: 'none', opacity: 0.4 } : {}}
             >
               LOAD MORE
             </button>
