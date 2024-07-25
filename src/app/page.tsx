@@ -9,6 +9,8 @@ import Image from 'next/image';
 import EventDetailsModal from "../components/event-details-modal.component";
 import { formatDate } from '../utils/utils';
 import '../app/globals.css';
+import { SpeedInsights } from "@vercel/speed-insights/next"
+
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -18,6 +20,7 @@ export default function Home() {
   const [search, setSearch] = useState('');
   const [searchedData, setSearchedData] = useState({ events: [], totalCount: 0, numberOfPages: 1, page: 1, pageSize: 4 } as EventsResponse);
   const [selectedEvent, setSelectedEvent] = useState<DetailedEvent | null>(null); // Track selected event
+  const [isLiveView, setIsLiveView] = useState(false);
 
   const { data, error, isLoading }: { data: EventsResponse, error: any, isLoading: boolean } = useSWR(
     `/api/events?page=${page}&pageSize=${pageSize}`,
@@ -93,6 +96,7 @@ export default function Home() {
 
   const toggleLiveView = () => {
     console.log('Toggling live view...');
+    setIsLiveView(!isLiveView);
   };
 
   const handleRowClick = (event: DetailedEvent) => {
@@ -130,7 +134,7 @@ export default function Home() {
             />
           </div>
           <div className="border-l border-gray-300 h-10 mx-2 hidden sm:block"></div>
-          <div className="w-full flex sm:w-auto sm:flex-wrap">
+          <div className="w-full flex sm:w-auto sm:flex-wrap flex-nowrap">
             <button
               onClick={handleFilter}
               className="px-3 py-1 bg-gray-100 text-gray-800 text-xs rounded flex items-center justify-center hover:scale-105 w-full sm:w-auto"
@@ -152,7 +156,7 @@ export default function Home() {
               className="px-3 py-1 bg-gray-100 text-xs text-gray-800 rounded flex items-center justify-center hover:scale-105 w-full sm:w-auto"
             >
               <Image src='/live.svg' alt='live icon' width={15} height={15} className="mr-1" />
-              LIVE
+              {isLiveView ? 'LIVE (ON)' : 'LIVE'}
             </button>
           </div>
         </div>
@@ -214,7 +218,8 @@ export default function Home() {
         event={selectedEvent}
         onClose={closeModal}
       />
-
+    
+      <SpeedInsights />
     </div>
   );
 }
