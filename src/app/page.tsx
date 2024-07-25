@@ -10,7 +10,7 @@ import EventDetailsModal from "../components/event-details-modal.component";
 import { formatDate } from '../utils/utils';
 import '../app/globals.css';
 import { SpeedInsights } from "@vercel/speed-insights/next"
-
+import { Analytics } from "@vercel/analytics/react"
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -220,6 +220,7 @@ export default function Home() {
       />
     
       <SpeedInsights />
+      <Analytics/>
     </div>
   );
 }
