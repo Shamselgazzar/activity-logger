@@ -22,20 +22,27 @@ export default function Home() {
   const [selectedEvent, setSelectedEvent] = useState<DetailedEvent | null>(null); // Track selected event
   const [isLiveView, setIsLiveView] = useState(false);
 
+  const refreshInterval = isLiveView ? 5000 : 0;
   const { data, error, isLoading }: { data: EventsResponse, error: any, isLoading: boolean } = useSWR(
     `/api/events?page=${page}&pageSize=${pageSize}`,
     fetcher,
+    {
+      revalidateOnFocus: false, // Disable revalidation on window focus
+      revalidateOnReconnect: false, // Disable revalidation on reconnect
+      refreshInterval: refreshInterval, // Disable periodic refreshing
+    }
   );
+  
 
   const loadingState = isLoading ? "loading" : "idle";
 
+  // Searching Logic
   useEffect(() => {
     if (data) {
       setSearch('');
       setSearchedData(data);
     }
   }, [data]);
-
 
   const searchEvents = useCallback(() => {
     if (!data) return;
@@ -54,7 +61,7 @@ export default function Home() {
     const searchedData = { events: searchedEvents, totalCount: searchedEvents.length, numberOfPages: Math.ceil(searchedEvents.length / pageSize), page: page, pageSize: pageSize } as EventsResponse;
     setSearchedData(searchedData);
   }, [data, search, pageSize]);
-  
+
   useEffect(() => {
     searchEvents();
   }, [search, searchEvents]);
@@ -94,10 +101,15 @@ export default function Home() {
     console.log('Filtering data...');
   };
 
+  // Live View Logic
   const toggleLiveView = () => {
-    console.log('Toggling live view...');
     setIsLiveView(!isLiveView);
   };
+
+  useEffect(() => {
+    console.log("Live view: ", isLiveView? "ON": "OFF");
+    console.log("Interval: ", refreshInterval);
+  } , [refreshInterval]);
 
   const handleRowClick = (event: DetailedEvent) => {
     setSelectedEvent(event);
@@ -134,7 +146,7 @@ export default function Home() {
             />
           </div>
           <div className="border-l border-gray-300 h-10 mx-2 hidden sm:block"></div>
-          <div className="w-full flex sm:w-auto sm:flex-wrap flex-nowrap">
+          <div className="w-full flex sm:w-auto">
             <button
               onClick={handleFilter}
               className="px-3 py-1 bg-gray-100 text-gray-800 text-xs rounded flex items-center justify-center hover:scale-105 w-full sm:w-auto"
