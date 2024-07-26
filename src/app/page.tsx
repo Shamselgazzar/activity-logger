@@ -11,6 +11,8 @@ import { formatDate } from '../utils/utils';
 import '../app/globals.css';
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/react"
+import { FilterPopover } from "../components/filter-popover.component";
+import { Filters } from "../models/Filters";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -21,8 +23,9 @@ export default function Home() {
   const [searchedData, setSearchedData] = useState({ events: [], totalCount: 0, numberOfPages: 1, page: 1, pageSize: 4 } as EventsResponse);
   const [selectedEvent, setSelectedEvent] = useState<DetailedEvent | null>(null); // Track selected event
   const [isLiveView, setIsLiveView] = useState(false);
-
   const refreshInterval = isLiveView ? 5000 : 0;
+  const [filters, setFilters] = useState({} as Filters);
+
   const { data, error, isLoading }: { data: EventsResponse, error: any, isLoading: boolean } = useSWR(
     `/api/events?page=${page}&pageSize=${pageSize}`,
     fetcher,
@@ -33,34 +36,34 @@ export default function Home() {
     }
   );
   
-
   const loadingState = isLoading ? "loading" : "idle";
 
   // Searching Logic
-  useEffect(() => {
-    if (data) {
-      setSearch('');
-      setSearchedData(data);
-    }
-  }, [data]);
-
   const searchEvents = useCallback(() => {
     if (!data) return;
-    if (!search) {
+    if (!search && !Object.keys(filters).length) {
       setSearchedData(data);
       return;
     }
     const searchedEvents = data.events.filter((item: DetailedEvent) => {
       return (
-        item.actor.name.toLowerCase().includes(search.toLowerCase()) ||
-        item.actor.email.toLowerCase().includes(search.toLowerCase()) ||
-        item.actor.group.toLowerCase().includes(search.toLowerCase()) ||
-        item.action.name.toLowerCase().includes(search.toLowerCase())
+        (item.actor.name.toLowerCase().includes(search.toLowerCase()) || 
+         item.actor.email.toLowerCase().includes(search.toLowerCase()) ||
+         item.actor.group.toLowerCase().includes(search.toLowerCase()) ||
+         item.action.name.toLowerCase().includes(search.toLowerCase())) &&
+        (!filters.actorId || item.actor.id === filters.actorId) &&
+        (!filters.targetId || item.target.id === filters.targetId) &&
+        (!filters.actionId || item.action.id === filters.actionId) &&
+        (!filters.location || item.location.toLowerCase().includes(filters.location.toLowerCase())) &&
+        (!filters.actorName || item.actor.name.toLowerCase().includes(filters.actorName.toLowerCase())) &&
+        (!filters.actorGroup || item.actor.group.toLowerCase().includes(filters.actorGroup.toLowerCase())) &&
+        (!filters.actorEmail || item.actor.email.toLowerCase().includes(filters.actorEmail.toLowerCase())) &&
+        (!filters.actionName || item.action.name.toLowerCase().includes(filters.actionName.toLowerCase()))
       );
     });
     const searchedData = { events: searchedEvents, totalCount: searchedEvents.length, numberOfPages: Math.ceil(searchedEvents.length / pageSize), page: page, pageSize: pageSize } as EventsResponse;
     setSearchedData(searchedData);
-  }, [data, search, pageSize]);
+  }, [data, search, filters, pageSize]);
 
   useEffect(() => {
     searchEvents();
@@ -97,8 +100,8 @@ export default function Home() {
     }
   };
 
-  const handleFilter = () => {
-    console.log('Filtering data...');
+  const handleFilter = (newFilters: React.SetStateAction<Filters>) => {
+    setFilters(newFilters);
   };
 
   // Live View Logic
@@ -147,13 +150,7 @@ export default function Home() {
           </div>
           <div className="border-l border-gray-300 h-10 mx-2 hidden sm:block"></div>
           <div className="w-full flex sm:w-auto">
-            <button
-              onClick={handleFilter}
-              className="px-3 py-1 bg-gray-100 text-gray-800 text-xs rounded flex items-center justify-center hover:scale-105 w-full sm:w-auto"
-            >
-              <Image src='/filter.svg' alt='filter icon' width={20} height={20} className="mr-1" />
-              FILTER
-            </button>
+            <FilterPopover applyFilters={handleFilter} />
             <div className="border-l border-gray-300 h-10 mx-2 hidden sm:block"></div>
             <button
               onClick={onExportClick}
