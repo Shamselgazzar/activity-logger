@@ -28,11 +28,12 @@ export function FilterPopover({ applyFilters }: FilterPopoverProps) {
 
   const handleSubmit = () => {
     applyFilters(filters);
+		handleClose();
   };
 
-  const handleReset = () => {
+  const handleReset = () => { 
     setFilters(initialFilters);
-    applyFilters(initialFilters);
+    applyFilters({});
   };
 
   const handleClose = () => {
@@ -52,7 +53,7 @@ export function FilterPopover({ applyFilters }: FilterPopoverProps) {
       <PopoverTrigger>
         <button
           ref={triggerButtonRef}
-          className="px-3 py-1 bg-gray-100 text-gray-800 text-xs rounded flex items-center justify-center hover:scale-105 w-full sm:w-auto"
+          className="px-3 py-1 text-gray-800 text-xs rounded flex items-center justify-center hover:scale-105 w-full sm:w-auto"
         >
           <Image src='/filter.svg' alt='filter icon' width={20} height={20} className="mr-1" />
           FILTER

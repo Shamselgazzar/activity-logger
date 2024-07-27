@@ -109,11 +109,6 @@ export default function Home() {
     setIsLiveView(!isLiveView);
   };
 
-  useEffect(() => {
-    console.log("Live view: ", isLiveView? "ON": "OFF");
-    console.log("Interval: ", refreshInterval);
-  } , [refreshInterval]);
-
   const handleRowClick = (event: DetailedEvent) => {
     setSelectedEvent(event);
   };
@@ -154,7 +149,7 @@ export default function Home() {
             <div className="border-l border-gray-300 h-10 mx-2 hidden sm:block"></div>
             <button
               onClick={onExportClick}
-              className="px-3 py-1 bg-gray-100 text-gray-800 text-xs rounded flex items-center justify-center hover:scale-105 w-full sm:w-auto"
+              className="px-3 py-1 text-gray-800 text-xs rounded flex items-center justify-center hover:scale-105 w-full sm:w-auto"
             >
               <Image src='/export.svg' alt='export icon' width={20} height={20} className="mr-1" />
               EXPORT
@@ -162,7 +157,7 @@ export default function Home() {
             <div className="border-l border-gray-300 h-10 mx-2 hidden sm:block"></div>
             <button
               onClick={toggleLiveView}
-              className="px-3 py-1 bg-gray-100 text-xs text-gray-800 rounded flex items-center justify-center hover:scale-105 w-full sm:w-auto"
+              className="px-3 py-1 text-xs text-gray-800 rounded flex items-center justify-center hover:scale-105 w-full sm:w-auto"
             >
               <Image src='/live.svg' alt='live icon' width={15} height={15} className="mr-1" />
               {isLiveView ? 'LIVE (ON)' : 'LIVE'}
