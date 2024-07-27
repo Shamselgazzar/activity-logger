@@ -27,7 +27,7 @@ export default function Home() {
   const [filters, setFilters] = useState({} as Filters);
 
   const { data, error, isLoading }: { data: EventsResponse, error: any, isLoading: boolean } = useSWR(
-    `/api/events?page=${page}&pageSize=${pageSize}&isLoadMore=false`,
+    `/api/events?page=${page}&pageSize=${pageSize}&isLoadMore=true`,
     fetcher,
     {
       revalidateOnFocus: false,
