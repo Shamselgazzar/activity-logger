@@ -21,18 +21,18 @@ export default function Home() {
   const [pageSize] = useState(4);
   const [search, setSearch] = useState('');
   const [searchedData, setSearchedData] = useState({ events: [], totalCount: 0, numberOfPages: 1, page: 1, pageSize: 4 } as EventsResponse);
-  const [selectedEvent, setSelectedEvent] = useState<DetailedEvent | null>(null); // Track selected event
+  const [selectedEvent, setSelectedEvent] = useState<DetailedEvent | null>(null);
   const [isLiveView, setIsLiveView] = useState(false);
   const refreshInterval = isLiveView ? 5000 : 0;
   const [filters, setFilters] = useState({} as Filters);
 
   const { data, error, isLoading }: { data: EventsResponse, error: any, isLoading: boolean } = useSWR(
-    `/api/events?page=${page}&pageSize=${pageSize}`,
+    `/api/events?page=${page}&pageSize=${pageSize}&isLoadMore=false`,
     fetcher,
     {
-      revalidateOnFocus: false, // Disable revalidation on window focus
-      revalidateOnReconnect: false, // Disable revalidation on reconnect
-      refreshInterval: refreshInterval, // Disable periodic refreshing
+      revalidateOnFocus: false,
+      revalidateOnReconnect: true,
+      refreshInterval: refreshInterval,
     }
   );
   
@@ -64,7 +64,6 @@ export default function Home() {
     const searchedData = { events: searchedEvents, totalCount: searchedEvents.length, numberOfPages: Math.ceil(searchedEvents.length / pageSize), page: page, pageSize: pageSize } as EventsResponse;
     setSearchedData(searchedData);
   }, [data, search, filters, pageSize]);
-
   useEffect(() => {
     searchEvents();
   }, [search, searchEvents]);
@@ -104,7 +103,6 @@ export default function Home() {
     setFilters(newFilters);
   };
 
-  // Live View Logic
   const toggleLiveView = () => {
     setIsLiveView(!isLiveView);
   };
@@ -116,7 +114,6 @@ export default function Home() {
   const closeModal = () => {
     setSelectedEvent(null);
   };
-
   
   function onExportClick(): void {
     handleExport(searchedData);
@@ -132,7 +129,7 @@ export default function Home() {
 
       <div id="main-container" className="max-w-5xl mx-auto border rounded-xl border-gray-300 bg-gray-100">
 
-      <div className="bg-gray-100 px-2 mx-5 mt-5 mb-2 rounded-xl flex flex-wrap items-center border border-gray-200">
+        <div className="bg-gray-100 px-2 mx-5 mt-5 mb-2 rounded-xl flex flex-wrap items-center border border-gray-200">
           <div className="w-full sm:flex-grow sm:w-auto">
             <input
               type="text"
@@ -204,7 +201,7 @@ export default function Home() {
         <div id="load-more-container" className="bg-gray-100 px-2 p-2 flex justify-between items-center text-center rounded-b-xl relative -mt-4">
           {!isLoading ? (
             <button
-              className="w-full bg-gray-100 text-gray-600 font-medium text-sm"
+              className="w-full bg-gray-100 text-gray-500 text-sm font-semibold rounded hover:text-gray-700"
               onClick={() => setPage(page + 1)}
               disabled={searchedData.numberOfPages <= page || page === 0}
               style={searchedData.numberOfPages <= page ? { pointerEvents: 'none', opacity: 0.4 } : {}}

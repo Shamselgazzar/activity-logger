@@ -1,12 +1,12 @@
-// seed.js
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
-    // Clear existing data
-    await prisma.event.deleteMany();
-    await prisma.eventAction.deleteMany();
-    await prisma.user.deleteMany();
+
+  // Clear existing data
+  // await prisma.event.deleteMany();
+  // await prisma.eventAction.deleteMany();
+  // await prisma.user.deleteMany();
 
   // Create users
   const user1 = await prisma.user.create({

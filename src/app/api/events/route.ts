@@ -32,6 +32,7 @@ export async function GET(request: Request) {
   // Pagination parameters
   const page = parseInt(searchParams.get('page') || '1', 10);
   const pageSize = parseInt(searchParams.get('pageSize') || '10', 10);
+  const isLoadMore = searchParams.get('isLoadMore') === 'true';
 
   // Search parameters
   const actorId = searchParams.get('actorId') || undefined;
@@ -63,8 +64,8 @@ export async function GET(request: Request) {
           name: actionName ? { contains: actionName, mode: 'insensitive' } : undefined,
         },
       },
-      skip: 0,
-      take: pageSize * page,
+      skip: isLoadMore ? 0 : (page - 1) * pageSize,
+      take: isLoadMore ? pageSize*page : pageSize,
       orderBy: {
         occurredAt: 'desc',
       },
@@ -104,10 +105,7 @@ export async function GET(request: Request) {
     });
   } catch (error) {
     const emptyResponse : EventsResponse = { events: [], totalCount: 0, pageSize: 4, numberOfPages: 0, page: 0 }
-    if (error instanceof Error && error.message.includes('Network request failed')) {
-      return NextResponse.json(emptyResponse, { status: 500 });
-    } else {
-      throw error;
-    }
+    return NextResponse.json(emptyResponse, { status: 500 }); 
   }
+
 }

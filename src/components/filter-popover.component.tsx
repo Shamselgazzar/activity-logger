@@ -45,7 +45,7 @@ export function FilterPopover({ applyFilters }: FilterPopoverProps) {
 
   return (
     <Popover
-      placement="bottom"
+      placement="bottom-start"
       showArrow
       offset={10}
       shadow="sm"
