@@ -16,12 +16,12 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function Home() {
   const [page, setPage] = useState(1);
-  const [pageSize] = useState(4);
+  const [pageSize] = useState(5);
   const [search, setSearch] = useState('');
   const [searchedData, setSearchedData] = useState({ events: [], totalCount: 0, numberOfPages: 1, page: 1, pageSize: 4 } as EventsResponse);
   const [selectedEvent, setSelectedEvent] = useState<DetailedEvent | null>(null);
   const [isLiveView, setIsLiveView] = useState(false);
-  const refreshInterval = isLiveView ? 5000 : 0;
+  const refreshInterval = isLiveView ? 3000 : 0;
   const [filters, setFilters] = useState({} as Filters);
 
   const { data, error, isLoading }: { data: EventsResponse, error: any, isLoading: boolean } = useSWR(
