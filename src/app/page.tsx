@@ -129,7 +129,7 @@ export default function Home() {
 
       <div id="main-container" className="max-w-5xl mx-auto border rounded-xl border-gray-300 bg-gray-100">
 
-        <div className="bg-gray-100 px-2 mx-5 mt-5 mb-2 rounded-xl flex flex-wrap items-center border border-gray-200">
+        <div id="actions-bar-container" className="bg-gray-100 px-2 mx-5 mt-5 mb-2 rounded-xl flex flex-wrap items-center border border-gray-200">
           <div className="w-full sm:flex-grow sm:w-auto">
             <input
               type="text"
@@ -161,7 +161,6 @@ export default function Home() {
             </button>
           </div>
         </div>
-
 
         <div id="table-container">
           <Table aria-label="events-table" selectionMode="single" 
