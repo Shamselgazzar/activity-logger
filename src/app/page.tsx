@@ -1,20 +1,16 @@
 'use client';
-import React, { useState, useEffect, Key, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import useSWR from 'swr';
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Spinner, Avatar } from "@nextui-org/react";
 import { DetailedEvent } from "../models/DetailedEvent";
 import { EventsResponse } from "../models/EventsResponse";
+import { Filters } from "../models/Filters";
+import { EventDetailsModal } from "../components/event-details-modal.component";
+import  { ActionsBar }  from "../components/actions-bar.component";
+import { EventsTable } from "../components/events-table.component";
 import { handleExport } from "../utils/exportUtils"; 
-import Image from 'next/image';
-import EventDetailsModal from "../components/event-details-modal.component";
-import { formatDate } from '../utils/utils';
 import '../app/globals.css';
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/react"
-import { FilterPopover } from "../components/filter-popover.component";
-import { Filters } from "../models/Filters";
-import ActionsBar from "../components/actions-bar.component";
-import EventsTable from "../components/events-table.component";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -115,7 +111,8 @@ export default function Home() {
           handleRowClick={handleRowClick}
         />
 
-        <div id="load-more-button" className="bg-gray-100 px-2 p-2 flex justify-between items-center text-center rounded-b-xl relative -mt-4">
+        <div id="load-more-button" 
+          className="bg-gray-100 px-2 p-2 flex justify-between items-center text-center rounded-b-xl relative -mt-4">
           {!isLoading ? (
             <button
               className="w-full bg-gray-100 text-gray-500 text-sm font-semibold rounded hover:text-gray-700"

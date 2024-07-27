@@ -84,5 +84,3 @@ export function EventDetailsModal({ event, onClose }: EventDetailsModalProps) {
     </Modal>
   );
 };
-
-export default EventDetailsModal;

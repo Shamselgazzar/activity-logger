@@ -1,4 +1,4 @@
-import { EventsResponse,  } from "../models/EventsResponse";
+import { EventsResponse } from "../models/EventsResponse";
 
 export const handleExport = (filteredData: EventsResponse) => {
   if (filteredData.events.length === 0) {

@@ -12,7 +12,7 @@ interface ActionsBarProps {
   handleFilter: (newFilters: React.SetStateAction<Filters>) => void;
 }
 
-const ActionsBar: React.FC<ActionsBarProps> = ({ search, setSearch, onExportClick, toggleLiveView, isLiveView, handleFilter }) => {
+export function ActionsBar({ search, setSearch, onExportClick, toggleLiveView, isLiveView, handleFilter }: ActionsBarProps) {
   return (
     <div id="actions-bar-container" className="bg-gray-100 px-2 mx-5 mt-5 mb-2 rounded-xl flex flex-wrap items-center border border-gray-200">
       <div className="w-full sm:flex-grow sm:w-auto">
@@ -48,5 +48,3 @@ const ActionsBar: React.FC<ActionsBarProps> = ({ search, setSearch, onExportClic
     </div>
   );
 };
-
-export default ActionsBar;

@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useRef, useEffect } from "react";
+import React, { useState, ChangeEvent, useRef } from "react";
 import { Popover, PopoverTrigger, PopoverContent, Button, Input } from "@nextui-org/react";
 import { Filters } from "../models/Filters";
 import Image from 'next/image';

@@ -11,7 +11,7 @@ interface EventsTableProps {
   handleRowClick: (event: DetailedEvent) => void;
 }
 
-const EventsTable: React.FC<EventsTableProps> = ({ searchedData, loadingState, handleRowClick }) => {
+export function EventsTable({ searchedData, loadingState, handleRowClick }: EventsTableProps) {
   const getKeyValue = (item: any, columnKey: Key) => {
     const key = String(columnKey);
     switch (key) {
@@ -81,4 +81,4 @@ const EventsTable: React.FC<EventsTableProps> = ({ searchedData, loadingState, h
   );
 };
 
-export default EventsTable;
+// export default EventsTable;
