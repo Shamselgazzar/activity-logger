@@ -40,9 +40,13 @@ export function ActionsBar({ search, setSearch, onExportClick, toggleLiveView, i
         <button
           onClick={toggleLiveView}
           className="px-3 py-1 text-xs text-gray-800 rounded flex items-center justify-center hover:scale-105 w-full sm:w-auto"
-        >
-          <Image src='/live.svg' alt='live icon' width={15} height={15} className="mr-1" />
-          {isLiveView ? 'LIVE (ON)' : 'LIVE'}
+        > 
+          { isLiveView ?
+            <Image src='/live-on.svg' alt='live icon' width={15} height={15} className="mr-1" />
+            :
+            <Image src='/live-off.svg' alt='live icon' width={15} height={15} className="mr-1" />
+           }
+          LIVE
         </button>
       </div>
     </div>
